@@ -9,7 +9,7 @@ class Navigation extends Component {
   signout = () => {
     app.auth().signOut()
       .then(() => {
-      this.props.history.push("/signup")
+      this.props.history.push("/signin")
       })
       .catch((error) => { console.log(error) })
   }

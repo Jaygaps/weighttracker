@@ -20,7 +20,9 @@ class Signin extends Component {
         const { email, password } = this.state;
 
         app.auth().signInWithEmailAndPassword(email, password)
-            .then(() => this.props.history.push("/initialise"))
+            .then(() => 
+                this.props.history.push("/initialise")
+            )
             .catch((error) => this.setState({ formError: error.message }));
     }
 
