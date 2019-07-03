@@ -1,0 +1,92 @@
+.signup {
+    display: block;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 10px 21px #e7eeef;
+    font-family: 'Poppins', sans-serif;
+    margin: 0 auto;
+    width: 500px;
+    padding: 30px;
+    border-radius: 10px;
+
+    .form-error {
+        color: #C02C2C;
+    }
+
+    
+    .title {
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+    
+    .form {
+        display: flex;
+        flex-direction: column;
+
+        .error {
+            color: #C02C2C;
+            margin-bottom: 16px;
+        }
+    }
+
+    .mdc-text-field {
+        font-family: 'Poppins', sans-serif;
+        background-color: transparent !important;
+        margin-bottom: 16px;
+        padding-left: 0;
+
+        .mdc-floating-label {
+            left: 0 !important;
+        }
+
+        .mdc-line-ripple {
+            background-color: #2A66CE !important;
+        }
+
+        .mdc-text-field__input {
+            padding-left: 0;
+            border-bottom-color: #2A66CE !important;
+        }
+    }
+
+    .mdc-text-field--focused {
+        .mdc-floating-label {
+            color: #2A66CE !important;
+        }
+
+        .mdc-text-field__input {
+            border-bottom-color: #2A66CE !important;
+        }
+    }
+
+    .button {
+        display: flex;
+        background-color: #2A66CE;
+        padding: 12px 38px;
+        width: max-content;
+        color: #fff;
+        font-family: 'Poppins', sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .notvalid {
+        background-color: #f8f8f8;
+        color: black;
+    }
+
+    .valid {
+        background-color: #2A66CE;
+        color: #fff;
+    }
+
+    .login {
+        margin-top: 10px;
+        cursor: pointer;
+    }
+
+}

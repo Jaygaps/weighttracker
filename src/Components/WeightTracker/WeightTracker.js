@@ -1,25 +1,21 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.scss';
-import app, { database } from './config';
+import '../../App.scss';
+import app, { database } from '../../config';
 
 import axios from 'axios';
 import _ from 'lodash';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleUp, faAngleDown, faGripLines } from "@fortawesome/free-solid-svg-icons";
-// import withFirebaseAuth from 'react-with-firebase-auth'
-// import * as firebase from 'firebase/app';
-// import 'firebase/auth';
+
 import '@material/react-text-field/dist/text-field.css';
-import LineChart, { parseFlatArray } from 'react-linechart';
-import '../node_modules/react-linechart/dist/styles.css';
 import TextField, { Input } from '@material/react-text-field';
+import '../../../node_modules/react-linechart/dist/styles.css';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 am4core.useTheme(am4themes_animated);
 let gsmData;
-class App extends Component {
+class WeightTracker extends Component {
   state = {
     data: [],
     weight: '',
@@ -27,10 +23,7 @@ class App extends Component {
     weight2: '',
   }
 
-  componentDidMount = () => {
-    app.auth().signInWithEmailAndPassword('jayrajrulz@live.com', 'abcdefg').catch(console.log('err'));
-    
-
+  componentDidMount = () => {    
     axios.get('https://weighttracker-ffaf8.firebaseio.com/weights.json')
       .then(result => {
         let array = Object.keys(result.data).map(function (key) {
@@ -305,7 +298,6 @@ class App extends Component {
               value={this.state.date}
               onChange={(e) => this.handleDate(e)} />
           </TextField>
-
         </div>
         <button onClick={() => this.handleSubmit()}>CLICK HERE</button>
       </div>
@@ -313,4 +305,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default WeightTracker;

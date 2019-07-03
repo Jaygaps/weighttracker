@@ -1,0 +1,46 @@
+.navigation {
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 10px 21px #e7eeef;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+
+    .heading {
+        font-family: 'Poppins', sans-serif;
+        flex: 1;
+        font-weight: 600;
+        font-size: 18px;
+        padding: 0 16px;
+
+        span {
+            font-weight: 300;
+            font-size: 16px;
+        }
+    }
+
+    ul {
+        margin: 0;
+        padding: 0;
+        display: flex;
+
+        li {
+            list-style-type: none;
+            display: flex;
+
+            .active {
+                border-radius: 8px;
+                background: #2A66CE;
+                color: #f8f8f8;
+            }
+
+            a {
+                padding: 10px;
+                margin: 8px 0;
+                text-decoration: none;
+                color: #333;
+                cursor: pointer;
+            }
+        }
+    }
+}
