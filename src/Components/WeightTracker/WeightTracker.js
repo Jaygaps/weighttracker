@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import '../../App.scss';
 import app, { database } from '../../config';
-
+import DatePicker from "react-datepicker";
+import * as moment from 'moment';
+import "react-datepicker/dist/react-datepicker.css";
 import axios from 'axios';
 import _ from 'lodash';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,103 +19,118 @@ am4core.useTheme(am4themes_animated);
 let gsmData;
 class WeightTracker extends Component {
   state = {
+    date: new Date(),
     data: [],
     weight: '',
-    date: '',
     weight2: '',
+    initialiseData: undefined
   }
 
   componentDidMount = () => {    
-    axios.get('https://weighttracker-ffaf8.firebaseio.com/weights.json')
-      .then(result => {
-        let array = Object.keys(result.data).map(function (key) {
-          return result.data[key]
-        });
-        this.setState({
-          data: array
-        }, () => {
-          am4core.useTheme(am4themes_animated);
-          // Themes end
-
-          var chart = am4core.create("chartdiv", am4charts.XYChart);
-          chart.paddingRight = 20;
-
-          var data = [];
-          var visits = 10;
-          var previousValue;
-
-          for (var i = 0; i < 100; i++) {
-            visits += Math.round((Math.random() < 0.5 ? 1 : -1) * Math.random() * 10);
-
-            if (i > 0) {
-              // add color to previous data item depending on whether current value is less or more than previous value
-              if (previousValue <= visits) {
-                data[i - 1].color = chart.colors.getIndex(0);
-              }
-              else {
-                data[i - 1].color = chart.colors.getIndex(5);
-              }
-            }
-
-            data.push({ date: new Date(2018, 0, i + 1), value: visits });
-            previousValue = visits;
-          }
-          const abc = this.state.data.slice(-1)[0];
-          let originalStart = parseFloat(53.35);
-          const avg = parseFloat((parseFloat(60 - abc.weight).toFixed(2)) / (this.calculateDate() / 7)).toFixed(2) / 7;
-
-          for (var index = 0; index < this.state.data.length; ++index) {
-            this.state.data[index]['weight2'] = originalStart;
-            originalStart += Number(avg);
-          }
-
-          chart.data = this.state.data
-          console.log(this.state.data);
-          this.setState({
-            weight2: this.state.data.slice(-1)[0]
-          })
-
-          chart.data = this.state.data;
-
-          var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-          dateAxis.renderer.grid.template.location = 0;
-          dateAxis.renderer.axisFills.template.disabled = true;
-          dateAxis.renderer.ticks.template.disabled = true;
-          dateAxis.renderer.grid.template.disabled = true;
-
-
-          var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-          valueAxis.tooltip.disabled = true;
-          valueAxis.renderer.minWidth = 35;
-          valueAxis.renderer.axisFills.template.disabled = true;
-          valueAxis.renderer.ticks.template.disabled = true;
-          valueAxis.renderer.grid.template.disabled = true;
-
-
-          let series2 = chart.series.push(new am4charts.LineSeries());
-          series2.dataFields.dateX = "date";
-          series2.dataFields.valueY = "weight2";
-          chart.cursor = new am4charts.XYCursor();
-
-          var series = chart.series.push(new am4charts.LineSeries());
-          series.dataFields.dateX = "date";
-          series.dataFields.valueY = "weight";
-          series.strokeWidth = 2;
-          series.tooltipText = "value: {valueY}, day change: {valueY.previousChange}";
-
-          // set stroke property field
-          series.propertyFields.stroke = "color";
-
-          this.chart = chart;
+    const user = app.auth().currentUser;
+    if (user) {
+      axios.get(`https://weighttracker-ffaf8.firebaseio.com/${user.displayName}/initialise.json`)
+        .then(result => {
+          this.setState({ initialiseData: result.data[Object.keys(result.data)[0]] }, () => {
+            axios.get(`https://weighttracker-ffaf8.firebaseio.com/${user.displayName}/weights.json`)
+            .then(result => {
+              console.log(result);
+              let array = Object.keys(result.data).map(function (key) {
+                return result.data[key]
+              });
+              this.setState({
+                data: array
+              }, () => {
+                am4core.useTheme(am4themes_animated);
+                // Themes end
+      
+                var chart = am4core.create("chartdiv", am4charts.XYChart);
+                chart.paddingRight = 20;
+      
+                var data = [];
+                var visits = 10;
+                var previousValue;
+      
+                for (var i = 0; i < 100; i++) {
+                  visits += Math.round((Math.random() < 0.5 ? 1 : -1) * Math.random() * 10);
+      
+                  if (i > 0) {
+                    // add color to previous data item depending on whether current value is less or more than previous value
+                    if (previousValue <= visits) {
+                      data[i - 1].color = chart.colors.getIndex(0);
+                    }
+                    else {
+                      data[i - 1].color = chart.colors.getIndex(5);
+                    }
+                  }
+      
+                  data.push({ date: new Date(2018, 0, i + 1), value: visits });
+                  previousValue = visits;
+                }
+                const abc = this.state.data.slice(-1)[0];
+                let originalStart = parseFloat(this.state.initialiseData && this.state.initialiseData.initialWeight);
+                const avg = parseFloat((parseFloat(this.state.initialiseData.goalWeight - abc.weight).toFixed(2)) / (this.calculateDate(this.state.initialiseData && this.state.initialiseData.goalDate) / 7)).toFixed(2) / 7;
+                console.log(avg, 'avg');
+                for (var index = 0; index < this.state.data.length; ++index) {
+                  this.state.data[index]['weight2'] = originalStart;
+                  originalStart += Number(avg);
+                }
+      
+                chart.data = this.state.data
+                console.log(this.state.data);
+                this.setState({
+                  weight2: this.state.data.slice(-1)[0]
+                })
+      
+                chart.data = this.state.data;
+      
+                var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+                dateAxis.renderer.grid.template.location = 0;
+                dateAxis.renderer.axisFills.template.disabled = true;
+                dateAxis.renderer.ticks.template.disabled = true;
+                dateAxis.renderer.grid.template.disabled = true;
+      
+      
+                var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+                valueAxis.tooltip.disabled = true;
+                valueAxis.renderer.minWidth = 35;
+                valueAxis.renderer.axisFills.template.disabled = true;
+                valueAxis.renderer.ticks.template.disabled = true;
+                valueAxis.renderer.grid.template.disabled = true;
+      
+      
+                let series2 = chart.series.push(new am4charts.LineSeries());
+                series2.dataFields.dateX = "date";
+                series2.dataFields.valueY = "weight2";
+                chart.cursor = new am4charts.XYCursor();
+      
+                var series = chart.series.push(new am4charts.LineSeries());
+                series.dataFields.dateX = "date";
+                series.dataFields.valueY = "weight";
+                series.strokeWidth = 2;
+                series.tooltipText = "value: {valueY}, day change: {valueY.previousChange}";
+      
+                // set stroke property field
+                series.propertyFields.stroke = "color";
+      
+                this.chart = chart;
+              })
+            })
+          });
         })
-      })
+     
+    }
+    
   }
 
-  calculateDate = () => {
+  calculateDate = (goalDate) => {
+    console.log(goalDate)
     const date1 = new Date();
-    const date2 = new Date('10/01/2019');
+    const date2 = new Date(moment(goalDate, 'DD/MM/YYYY').format('MM/DD/YYYY'));
+    console.log(date1, date2)
     const diffTime = Math.abs(date2.getTime() - date1.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    console.log(diffDays)
     return diffDays;
   }
 
@@ -125,13 +142,15 @@ class WeightTracker extends Component {
   }
 
   handleSubmit = () => {
+    const user = app.auth().currentUser;
+
     var today = new Date();
     var dd = today.getDate();
 
     var mm = today.getMonth() + 1;
     var yyyy = today.getFullYear();
     today = mm + '/' + dd + '/' + yyyy;
-    axios.post('https://weighttracker-ffaf8.firebaseio.com/weights.json',
+    axios.post(`https://weighttracker-ffaf8.firebaseio.com/${user.displayName}/weights.json`,
       {
         weight: parseFloat(this.state.weight).toFixed(2),
         date: !this.state.date ? today : this.state.date
@@ -144,19 +163,19 @@ class WeightTracker extends Component {
       });
   }
 
+  handleDate = (date) => {
+    this.setState({ date: date });
+  }
+
   render() {
     const abc = this.state.data.slice(-1)[0];
-    console.log(this.state.data.length);
+    console.log(abc);
     let slice = this.state.data;
     slice = _.chunk(slice, 7);
     const user = app.auth().currentUser;
-    console.log(user);
-    if (user) {
-      user.updateProfile({ displayName: 'Jayraj'});
-    } else {
-      console.log('ssss')
-    }
-    // console.log(user.displayName);
+
+    const { initialiseData } = this.state;
+    console.log(this.state.weight2);
     return (
       <div className="App">
         <header>
@@ -173,7 +192,7 @@ class WeightTracker extends Component {
               </div>
               <div className="small">
                 {
-                  abc && abc.date
+                  abc && moment(abc.date).format('DD/MM/YYYY')
                 }
               </div>
             </div>
@@ -182,10 +201,10 @@ class WeightTracker extends Component {
                 Goal Weight
                 </div>
               <div className="subtitle">
-                60 KGS
+                {initialiseData && initialiseData.goalWeight + " KGS"}
                 </div>
               <div className="small">
-                01/10/2019
+                {initialiseData && initialiseData.goalDate}
                 </div>
             </div>
             <div className={`inner-flex data-2`}>
@@ -193,7 +212,7 @@ class WeightTracker extends Component {
                 Days remaining
                 </div>
               <div className="subtitle">
-                {this.calculateDate()}
+                {this.calculateDate(initialiseData && initialiseData.goalDate)}
               </div>
             </div>
             <div className={`inner-flex`}>
@@ -207,7 +226,7 @@ class WeightTracker extends Component {
               </div>
               <div className="small">
                 {abc &&
-                  parseFloat((parseFloat(60 - abc.weight).toFixed(2)) / (this.calculateDate() / 7)).toFixed(2) + " KGS / PW"
+                  parseFloat((parseFloat(60 - abc.weight).toFixed(2)) / (this.calculateDate(initialiseData && initialiseData.goalDate) / 7)).toFixed(2) + " KGS / PW"
                 }
               </div>
             </div>
@@ -236,7 +255,7 @@ class WeightTracker extends Component {
                 Weeks remaining
                 </div>
               <div className="subtitle">
-                {parseInt(this.calculateDate() / 7)}
+                {parseInt(this.calculateDate(initialiseData && initialiseData.goalDate) / 7)}
               </div>
             </div>
             <div className={`inner-flex`}>
@@ -291,13 +310,12 @@ class WeightTracker extends Component {
               value={this.state.weight}
               onChange={(e) => this.handleWeight(e)} />
           </TextField>
-          <TextField
-            label='Enter Date'
-            className="field"
-          ><Input
-              value={this.state.date}
-              onChange={(e) => this.handleDate(e)} />
-          </TextField>
+          <DatePicker
+            placeholderText="Select a date"
+            minDate={new Date("06/20/2019")}
+            selected={this.state.date}
+            onChange={this.handleDate}
+          />
         </div>
         <button onClick={() => this.handleSubmit()}>CLICK HERE</button>
       </div>

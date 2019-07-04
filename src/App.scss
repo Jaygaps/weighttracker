@@ -58,6 +58,21 @@ body {
     }
   }
 
+  .react-datepicker-wrapper {
+    margin-left: 8px;
+    
+    .react-datepicker__input-container {
+      input {
+        background: transparent;
+        border: 0;
+
+        border-bottom: 1px solid rgba(0, 0, 0, 0.42);
+        line-height: 1.75rem;
+        padding: 20px 16px 5px;
+      }
+    }
+  }
+
   .flex2 {
     display: flex;
     margin: 8px;
