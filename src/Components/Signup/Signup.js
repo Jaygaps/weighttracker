@@ -23,15 +23,6 @@ class Signup extends Component {
         app.auth().createUserWithEmailAndPassword(email, password)
             .then(() => this.props.history.push("/signin"))
             .catch((error) => this.setState({ formError: error.message }));
-            // this.setState({ formError: true });
-
-        // try {
-            
-        // const user = await app
-        //     .auth()
-        //     .createUserWithEmailAndPassword(email.value, password.value);
-        // this.props.history.push("/");
-        // } catch (error) {
     }
 
     handleEmail = (e) => {

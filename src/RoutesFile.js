@@ -13,25 +13,25 @@ import Signup from './Components/Signup/Signup';
 import Signin from './Components/Signin/Signin';
 import Initialise from './Components/Initialise/Initialise';
 import { withRouter } from 'react-router';
+import Loader from 'react-loader-spinner'
+import './App.scss';
 
 import * as ROUTES from './Routes';
 
 const RoutesFile = (props) => {
   const [user, initialising, error] = useAuthState(app.auth());
-  if (user) {
+  if (initialising) {
     return (
-      <Router>
-        <div>
-          <Navigation userLoggedIn={user} />
-          <Route exact path={ROUTES.LANDING} component={WeightTracker} />
-          <Route exact path={ROUTES.INITIALISE} component={Initialise} />
-          <Redirect to={ROUTES.INITIALISE} />
-
-        </div>
-    </Router>
+      <div className="loader">
+        <Loader
+          type="Bars"
+          color="#2A66CE"
+          height="80"
+          width="80"
+        />       
+      </div>
     )
   }
-
   if (user && user.displayName) {
     return (
       <Router>
@@ -42,7 +42,21 @@ const RoutesFile = (props) => {
           <Redirect to={ROUTES.LANDING} />
 
         </div>
-    </Router>
+      </Router>
+    )
+  }
+
+  if (user) {
+    return (
+      <Router>
+        <div>
+          <Navigation userLoggedIn={user} />
+          <Route exact path={ROUTES.LANDING} component={WeightTracker} />
+          <Route exact path={ROUTES.INITIALISE} component={Initialise} />
+          <Redirect to={ROUTES.INITIALISE} />
+
+        </div>
+      </Router>
     )
   }
 
@@ -56,9 +70,9 @@ const RoutesFile = (props) => {
           <Redirect to={ROUTES.SIGN_UP} />
         </Switch>
       </div>
-  </Router>
+    </Router>
   )
-  
+
 };
 
 export default withRouter(RoutesFile);

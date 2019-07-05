@@ -9,14 +9,12 @@ class Navigation extends Component {
   signout = () => {
     app.auth().signOut()
       .then(() => {
-        console.log(this.props);
       this.props.history.push("/signin")
       })
       .catch((error) => { console.log(error) })
   }
   render() {
     const { userLoggedIn } = this.props;
-    console.log(userLoggedIn);
     return (
       <div className="navigation">
         <div className="heading">Weight Tracker <span> v 1.1</span></div>

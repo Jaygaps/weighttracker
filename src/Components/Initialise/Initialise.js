@@ -8,6 +8,7 @@ import '@material/react-text-field/dist/text-field.css';
 import TextField, { Input } from '@material/react-text-field';
 import axios from 'axios';
 import * as moment from 'moment';
+import DatePicker from "react-datepicker";
 
 var today = new Date();
 var dd = today.getDate();
@@ -16,24 +17,20 @@ var mm = today.getMonth() + 1;
 var yyyy = today.getFullYear();
 today = mm + '/' + dd + '/' + yyyy;
 
-const Initialise = () => {
+const Initialise = (props) => {
     const [user, initialising, error] = useAuthState(app.auth());
     const [input, setInput] = useState({});
     const [userData, setUserData] = useState([]);
 
     useEffect(() => {
+        axios.get('https://weighttracker-ffaf8.firebaseio.com/weighttracker-ffaf8.json')
+            .then(result => {console.log(result)})
         if (user) {
-            console.log(user);
             if (user.displayName) {
-                console.log(user.displayName)
                 axios.get(`https://weighttracker-ffaf8.firebaseio.com/${user.displayName}/initialise.json`)
                 .then(result => 
                     {
-                        console.log(result);
                         setUserData(result.data[Object.keys(result.data)[0]]);
-                        // setUserData(() => result.data[Object.keys(result.data)[0]]);
-
-                        // let resultdata = result.data[Object.keys(result.data)[0]];
                     }
                 )
             }
@@ -45,24 +42,24 @@ const Initialise = () => {
         setInput(input => ({...input, [event.target.name]: event.target.value}));
     }
 
+    const handleCalendar = (event) => {
+        setInput(input => ({...input, 'goalDate': event, 'initialDate': new Date()}));
+    }
+
     const handleSubmit = (event) => {
         event.preventDefault();
         user.updateProfile({ displayName: input.displayName}).then(() => {
-            console.log(user.displayName);
             axios.post(`https://weighttracker-ffaf8.firebaseio.com/${user.displayName}/initialise.json`, input)
-                .then(res => { console.log(res.data)})
+                .then(res => { console.log(res)})
                 .catch(err => { console.log(err)});
             axios.post(`https://weighttracker-ffaf8.firebaseio.com/${user.displayName}/weights.json`,
             {
                 weight: parseFloat(input.initialWeight).toFixed(2),
                 date: today
             })
-            .then(res => {
-                console.log(res.data);
+            .then(() => {
+                props.history.push("/app");
             })
-            .catch(err => {
-                console.log(err);
-            });
         });
     }
 
@@ -105,17 +102,15 @@ const Initialise = () => {
                     </TextField>
                 </div>
                 <div className="wrapper">
-                    <TextField
-                        label='Enter goal date'
-                        className="field"
-                    ><Input
-                        name="goalDate"
-                        value={input.goalDate}
-                        onChange={handleInputChange} />
-                    </TextField>
+                    <DatePicker
+                        placeholderText="Select a goal date"
+                        minDate={new Date()}
+                        selected={input.goalDate}
+                        onChange={handleCalendar}
+                    />
                 </div>
                 <div className="wrapper">
-                    <button onClick={handleSubmit}>Submit</button>
+                    <button className="button" onClick={handleSubmit}>Submit</button>
                 </div>
             </form>
         </div>

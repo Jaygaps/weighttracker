@@ -6,21 +6,58 @@ body {
   margin: 0 auto;
   font-family: 'Poppins', sans-serif;
 
+  .header-section {
+    margin: 0 16px;
+    display: flex;
+    align-items: center;
+
+    header {
+      flex: 1;
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .side {
+      display: flex;
+
+      .first {
+        margin: 0 16px;
+      }
+
+      .section {
+        font-size: 14px;
+        background: #fff;
+        border-radius: 6px;
+        box-shadow: 0 10px 21px #e7eeef;
+        padding: 8px 16px;
+      }
+    }
+  }
+
   .flex {
     display: flex;
     margin: 8px;
+
+    .inner-flex > .flexer:last-child {
+      border-left: 1px solid lightgray;
+    }
 
     .inner-flex {
       flex: 1;
       display: flex;
       align-items: center;
-      height: 100px;
       margin: 4px;
       justify-content: center;
-      flex-direction: column;
       background: #fff;
       border-radius: 6px;
-      box-shadow: 0 10px 21px #e7eeef;
+      // box-shadow: 0 10px 21px #e7eeef;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+
+
+      .flexer {
+        flex: 1;
+        padding: 16px 24px;
+      }
 
       .title {
         font-size: 14px;
@@ -37,40 +74,33 @@ body {
       }
     }
 
-    .data-1 {
-      // background-image: linear-gradient(to bottom, #DC2E2E, #b62121);
-      border-bottom-left-radius: 6px;
-      border-bottom-right-radius: 6px;
-      border-bottom: 2px solid #DC2E2E;
-    }
-
     .data-0 {
-      border-bottom-left-radius: 6px;
-      border-bottom-right-radius: 6px;
-      border-bottom: 2px solid #095F90;
+      background: linear-gradient(90deg, rgba(180,58,157,1) 0%, rgba(253,29,29,1) 50%, rgba(252,145,69,1) 100%);
+      color: white;
     }
 
     .data-2 {
-      border-bottom-left-radius: 6px;
-      border-bottom-right-radius: 6px;
-      border-bottom: 2px solid #0F9009;
-
+      background-image: linear-gradient(225deg, #FF3CAC 0%, #784BA0 50%, #2B86C5 100%);
+      color: white;
     }
   }
 
   .react-datepicker-wrapper {
-    margin-left: 8px;
+    margin-bottom: 32px;
+    width: 100%;
     
     .react-datepicker__input-container {
-      input {
-        background: transparent;
-        border: 0;
+        width: 100%;
 
-        border-bottom: 1px solid rgba(0, 0, 0, 0.42);
-        line-height: 1.75rem;
-        padding: 20px 16px 5px;
-      }
-    }
+        input {
+            background: transparent;
+            border: 0;
+            width: 100%;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.42);
+            line-height: 1.75rem;
+            padding: 16px 0;
+        }
+    }   
   }
 
   .flex2 {
@@ -123,12 +153,114 @@ body {
     }
   }
 
-  #chartdiv {
+  .graph {
+
+    .title {
+      font-size: 18px;
+      font-weight: 600;
+      padding: 16px;
+    }
+
     background: #fff;
     border-radius: 6px;
     box-shadow: 0 10px 21px #e7eeef;
     margin: 16px 11px;
-    width: 98%;
+
+    #chartdiv {
+      width: auto;
+    }
+  }
+
+
+  .wrapped {
+    display: flex;
+    margin: 0 8px 32px 8px;
+
+    .mdc-text-field {
+      font-family: 'Poppins', sans-serif;
+      background-color: transparent !important;
+      margin-bottom: 16px;
+      padding-left: 0;
+      width: 100%;
+
+      .mdc-floating-label {
+          left: 0 !important;
+      }
+
+      .mdc-line-ripple {
+          background-color: #2A66CE !important;
+      }
+
+      .mdc-text-field__input {
+          padding-left: 0;
+          border-bottom-color: #2A66CE !important;
+      }
+  }
+
+  .mdc-text-field--focused {
+      .mdc-floating-label {
+          color: #2A66CE !important;
+      }
+
+      .mdc-text-field__input {
+          border-bottom-color: #2A66CE !important;
+      }
+  }
+
+    .flexed {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+      margin: 0 4px;
+      background: #fff;
+      border-radius: 6px;
+      box-shadow: 0 10px 21px #e7eeef;
+
+      p {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0;
+      }
+
+      .history {
+        display: flex;
+        align-items: center;
+        padding: 4px 0;
+        margin: 4px 0;
+        border-bottom: 1px solid #eee;
+
+        .date {
+          flex: 1;
+        }
+
+        .weight {
+          font-weight: 600;
+
+          span {
+            font-weight: 300;
+            color: red;
+            margin-right: 16px;
+            cursor: pointer;
+            font-size: 12px;
+          }
+        }
+      }
+
+    }
+
+    .button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 38px;
+      border: 0;
+      background-image: linear-gradient(225deg, #FF3CAC 0%, #784BA0 50%, #2B86C5 100%);
+      color: white;
+      border-radius: 20px;
+      font-size: 16px;
+  }
   }
 }
 
@@ -160,4 +292,11 @@ body {
   to {
     transform: rotate(360deg);
   }
+}
+
+.loader {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
 }
