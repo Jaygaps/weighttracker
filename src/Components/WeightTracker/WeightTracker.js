@@ -67,13 +67,9 @@ class WeightTracker extends Component {
                   data.push({ date: new Date(2018, 0, i + 1), value: visits });
                   previousValue = visits;
                 }
-                console.log(this.state.data)
                 const abc = this.state.data.slice(-1)[0];
                 let originalStart = parseFloat(this.state.initialiseData && this.state.initialiseData.initialWeight);
                 const avg = ((this.state.initialiseData.goalWeight - this.state.initialiseData.initialWeight) / 90);
-                console.log(avg);
-                console.log(this.state.initialiseData)
-                console.log(abc)
                 for (var index = 0; index < this.state.data.length; ++index) {
                   if (index == 0){
                   this.state.data[index]['DayDiff'] = 0;
@@ -83,7 +79,6 @@ class WeightTracker extends Component {
                     const a = new Date(this.state.data[index-1].date);
                     const b = new Date(this.state.data[index].date);
                       this.state.data[index]['DayDiff'] = parseInt((b - a) / (1000 * 60 * 60 * 24));
-                      console.log(avg * this.state.data[index].DayDiff);
                       this.state.data[index]['weight2'] = Number(this.state.data[index-1].weight2) + Number(avg * this.state.data[index].DayDiff);
 
                     }
@@ -96,13 +91,11 @@ class WeightTracker extends Component {
                   // this.state.data[index]['diffDates'] = diff;
                   // originalStart += Number(avg * this.state.data[index].DayDiff);
                 }
-                console.log(this.state.data);
       
                 chart.data = this.state.data
                 this.setState({
                   weight2: this.state.data.slice(-1)[0]
                 });
-                console.log(this.state.data);
       
                 chart.data = this.state.data;
       
