@@ -128,15 +128,6 @@ body {
         font-weight: 600;
       }
 
-      .arrow {
-        display: flex;
-        align-items: center;
-
-        div {
-          margin: 0 8px;
-        }
-      }
-
       .active {
         position: absolute;
         right: 15px;
@@ -216,6 +207,39 @@ body {
       background: #fff;
       border-radius: 6px;
       box-shadow: 0 10px 21px #e7eeef;
+
+      .last {
+        border-radius: 30px;
+        color: #2B86C5;
+        padding: 0 30px;
+        font-weight: 600;
+      }
+
+      .inner-flex {
+        padding: 4px 0;
+        flex: 1;
+        display: flex;
+        border-bottom: 1px solid #eee;
+
+        .title {
+          display: flex;
+          align-items: center;
+          flex: 1;
+        }
+  
+        .arrow {
+          display: flex;
+          align-items: center;
+  
+          div {
+            margin: 0 8px 0 0;
+          }
+
+          .bold {
+            font-weight: 600;
+          }
+        }
+      }
 
       p {
         font-size: 18px;

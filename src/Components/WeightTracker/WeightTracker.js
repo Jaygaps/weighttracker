@@ -24,7 +24,8 @@ class WeightTracker extends Component {
     data: [],
     weight: '',
     weight2: '',
-    initialiseData: undefined
+    initialiseData: undefined,
+    sortedWeeks: {},
   }
 
   componentDidMount = () => {    
@@ -92,12 +93,15 @@ class WeightTracker extends Component {
                   // originalStart += Number(avg * this.state.data[index].DayDiff);
                 }
       
-                chart.data = this.state.data
                 this.setState({
                   weight2: this.state.data.slice(-1)[0]
                 });
+
+                let sorted = this.state.data;
+                sorted = _.sortBy(sorted, [function(o) { return o.date; }]);
+
       
-                chart.data = this.state.data;
+                chart.data = sorted;
       
                
                 var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
@@ -207,12 +211,44 @@ class WeightTracker extends Component {
       .catch((err) => { console.log(err) })    
   }
 
+  handleTitle = (d, index, arr) => {
+    let counter;
+    let counter2;
+    if (index === 0) {
+      counter = 0;
+    } 
+    if (index === 1) {
+      counter = arr[index].d - arr[index-1].d;
+    } 
+    if (index > 1) {
+      counter = arr[index].d - arr[index-1].d;
+      counter2 = arr[index-1].d - arr[index-2].d;
+      counter += counter2;
+    }
+    return `Change in week ${counter + 1}`;
+  }
+
   render() {
-    const abc = this.state.data.slice(-1)[0];
-    let slice = this.state.data;
-    // console.log(this.state.data);
-    // slice = _.chunk(slice, 7);
-    // console.log(slice);
+    let sortedData = this.state.data;
+    sortedData = _.sortBy(sortedData, [function(o) { return o.date; }]);
+    const abc = sortedData.slice(-1)[0];
+    
+    let byweek ={};
+    function groupweek(value, index, array)
+    {
+      
+      let d = new Date(value['date']);
+      d = Math.floor(d.getTime()/(1000*60*60*24*7));
+        byweek[d]=byweek[d]||[];
+        byweek[d]['d'] = d;
+        byweek[d].push(value);
+      }
+      
+    sortedData.map(groupweek)
+    let sortedWeeks = Object.keys(byweek).map(function (key) {
+      return byweek[key]
+    });          
+    
     const user = app.auth().currentUser;
     const { initialiseData } = this.state;
 
@@ -220,7 +256,7 @@ class WeightTracker extends Component {
     let now = initialiseData && moment(initialiseData.initialDate);
     let duration;
     if (now && end) {
-      duration = now.diff(end, 'days');
+      duration = end.diff(now, 'days');
     }
     return (
       <div className="App">
@@ -299,7 +335,7 @@ class WeightTracker extends Component {
               </div>
               <div className="subtitle">
                 {
-                  this.state.weight2 && parseFloat(this.state.weight2.weight2).toFixed(2) + " KGS"
+                  abc && parseFloat(abc.weight2).toFixed(2) + " KGS"
                 }
               </div>
             </div>
@@ -320,44 +356,6 @@ class WeightTracker extends Component {
               </div>
             </div>
           </div>
-          {/* <div className="flex2">
-            {
-              slice.map((s, index) => {
-                let check1;
-                let check2;
-                let duration;
-                console.log(s, index);
-                check1 = moment(s);
-                console.log(check1, check2);
-
-              })
-              slice && slice.map((i, index, arr) => (
-                <div className={`inner-flex ${arr.length - 1 === index ? 'last' : ''}`}>
-                  <div className="title">
-                    Weight change week {index + 1}
-                  </div>
-                  <div className="arrow">
-                    <div>
-                      {
-                        parseFloat(i.slice(-1)[0].weight - i[0].weight).toFixed(2) + " KGS"
-                      }
-                    </div>
-                    {
-                      (i.slice(-1)[0].weight - i[0].weight < 0) ?
-                        <FontAwesomeIcon icon={faAngleDown} size="2x" color="red" /> :
-                        (i.slice(-1)[0].weight - i[0].weight === 0) ?
-                          <FontAwesomeIcon icon={faGripLines} size="2x" color="grey" /> :
-                          <FontAwesomeIcon icon={faAngleUp} size="2x" color="green" />
-                    }
-                  </div>
-                  {
-                    arr.length - 1 === index &&
-                    <div className="active">Active week</div>
-                  }
-                </div>
-              ))
-            }
-          </div> */}
           <div className="graph">
             <div className="title">Graph analysis</div>
             {
@@ -389,8 +387,8 @@ class WeightTracker extends Component {
           <div className="flexed">
             <p>History</p>
               {
-                this.state.data && 
-                this.state.data.map((data, arr) => (
+                sortedData && 
+                sortedData.map((data, arr) => (
                   <div className="history">
                     <div className="date">
                       {
@@ -408,6 +406,51 @@ class WeightTracker extends Component {
                   </div>  
                 ))
               }
+          </div>
+          
+        </div>
+        <div className="wrapped">
+          <div className="flexed">
+          <p>Weight difference per week</p>
+          {
+              sortedWeeks && sortedWeeks.map((weeks, i, arr) => (
+                <div className={`inner-flex ${arr.length - 1 === i ? 'last' : ''}`}>
+                  <div className="title">
+                    {
+                      this.handleTitle(weeks.d, i, arr)
+                    }
+                  </div>
+                  <div className="arrow">
+
+                  
+                    <div>
+                    {
+                      (weeks.slice(-1)[0].weight - weeks[0].weight < 0) ?
+                        <FontAwesomeIcon icon={faAngleDown} size="2x" color="red" /> :
+                        (weeks.slice(-1)[0].weight - weeks[0].weight === 0) ?
+                          <FontAwesomeIcon icon={faGripLines} size="2x" color="grey" /> :
+                          <FontAwesomeIcon icon={faAngleUp} size="2x" color="green" />
+                    }
+                  </div>
+                  <div className="bold">
+                      {
+                        parseFloat(weeks.slice(-1)[0].weight - weeks[0].weight).toFixed(2) + " KGS"
+                      }
+                    </div>
+                  {/* <div>
+                  {
+                    arr.length - 1 === i &&
+                    <div className="active">Active week</div>
+                  }
+                    </div> */}
+                  </div>
+                 </div>           
+                
+              ))
+            }
+          </div>
+          <div className="flexed">
+            <p>Coming Soon</p>
           </div>
           
         </div>

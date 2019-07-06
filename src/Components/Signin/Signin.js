@@ -98,7 +98,7 @@ class Signin extends Component {
                         Sign In
                     </button>
                 </form>
-                <div className="login">Sign up</div>
+                <div className="login" onClick={() => this.props.history.push("/signup")}>Sign up</div>
             </div>
         )
     }
