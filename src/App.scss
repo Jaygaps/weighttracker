@@ -165,7 +165,7 @@ body {
 
   .wrapped {
     display: flex;
-    margin: 0 8px 32px 8px;
+    margin: 0 8px 16px 8px;
 
     .mdc-text-field {
       font-family: 'Poppins', sans-serif;
@@ -200,6 +200,8 @@ body {
 
     .flexed {
       flex: 1;
+      max-height: 300px;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
       padding: 16px;

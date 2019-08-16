@@ -211,23 +211,6 @@ class WeightTracker extends Component {
       .catch((err) => { console.log(err) })    
   }
 
-  handleTitle = (d, index, arr) => {
-    let counter;
-    let counter2;
-    if (index === 0) {
-      counter = 0;
-    } 
-    if (index === 1) {
-      counter = arr[index].d - arr[index-1].d;
-    } 
-    if (index > 1) {
-      counter = arr[index].d - arr[index-1].d;
-      counter2 = arr[index-1].d - arr[index-2].d;
-      counter += counter2;
-    }
-    return `Change in week ${counter + 1}`;
-  }
-
   render() {
     let sortedData = this.state.data;
     sortedData = _.sortBy(sortedData, [function(o) { return o.date; }]);
@@ -417,12 +400,10 @@ class WeightTracker extends Component {
                 <div className={`inner-flex ${arr.length - 1 === i ? 'last' : ''}`}>
                   <div className="title">
                     {
-                      this.handleTitle(weeks.d, i, arr)
+                      `Change in week ${i + 1}`
                     }
                   </div>
                   <div className="arrow">
-
-                  
                     <div>
                     {
                       (weeks.slice(-1)[0].weight - weeks[0].weight < 0) ?
@@ -437,12 +418,6 @@ class WeightTracker extends Component {
                         parseFloat(weeks.slice(-1)[0].weight - weeks[0].weight).toFixed(2) + " KGS"
                       }
                     </div>
-                  {/* <div>
-                  {
-                    arr.length - 1 === i &&
-                    <div className="active">Active week</div>
-                  }
-                    </div> */}
                   </div>
                  </div>           
                 
